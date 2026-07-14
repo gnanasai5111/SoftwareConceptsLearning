@@ -1,4 +1,4 @@
-# Valid Parentheses (LeetCode 20)
+# Valid Parentheses
 
 ## Problem Statement
 
@@ -174,81 +174,6 @@ class Solution(object):
 
 ---
 
-# Dry Run
-
-### Input
-
-```text
-s = "{[]}"
-```
-
-### Step 1
-
-```
-{
-
-Stack
-
-{
-```
-
----
-
-### Step 2
-
-```
-[
-
-Stack
-
-{
-[
-```
-
----
-
-### Step 3
-
-```
-]
-
-Pop [
-
-Matches ✔
-```
-
-Stack
-
-```
-{
-```
-
----
-
-### Step 4
-
-```
-}
-
-Pop {
-
-Matches ✔
-```
-
-Stack
-
-```
-Empty
-```
-
-Return:
-
-```text
-True
-```
-
----
-
 # Time Complexity
 
 ### O(n)
@@ -290,32 +215,6 @@ Space Complexity:
 ```
 O(n)
 ```
-
----
-
-# Why Stack?
-
-The problem requires matching the **most recently opened bracket** with the current closing bracket.
-
-Example:
-
-```text
-{ [ ( ) ] }
-```
-
-When `)` is encountered, it should match **`(`**, which is the latest unmatched opening bracket.
-
-This is exactly the **LIFO** property of a stack.
-
----
-
-# Interview Takeaways
-
-* Use a **Stack** whenever you need to process the **most recently added/opened** element first.
-* A **Hash Map (Dictionary)** simplifies matching closing brackets with opening brackets.
-* Every element is pushed and popped **at most once**, giving an **O(n)** solution.
-* Always check whether the stack is empty before calling `pop()` to avoid errors.
-* At the end of the traversal, the stack **must be empty** for the string to be valid.
 
 ---
 
