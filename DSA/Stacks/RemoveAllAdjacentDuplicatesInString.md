@@ -1,4 +1,4 @@
-# Remove All Adjacent Duplicates In String (LeetCode 1047)
+# Remove All Adjacent Duplicates In String 
 
 ## Problem Statement
 
@@ -66,35 +66,158 @@ ay
 
 ## Intuition
 
-Repeatedly scan the string.
+* Traverse the string from left to right.
+* Whenever two adjacent characters are equal, remove both of them.
+* Build a **new string** without those duplicate pairs.
+* Repeat this process until one complete traversal finds no adjacent duplicates.
 
-Whenever two adjacent characters are the same:
+This approach repeatedly scans and rebuilds the string.
 
-* Remove them.
-* Build a new string.
-* Repeat until no duplicates are found.
+---
 
-### Algorithm
+## Algorithm
 
 1. Traverse the string.
-2. Remove every adjacent duplicate pair.
-3. Create a new string.
-4. Repeat until one complete pass finds no duplicates.
+2. If two adjacent characters are equal, skip both.
+3. Otherwise, add the current character to a new string.
+4. After one complete pass:
 
-### Time Complexity
+   * If no duplicates were removed, return the new string.
+   * Otherwise, repeat the process using the newly built string.
 
-**O(n²)**
+---
+
+## Brute Force Solution
+
+```python
+class Solution(object):
+    def removeDuplicates(self, s):
+        length = len(s)
+
+        while True:
+
+            foundDuplicates = False
+            i = 0
+            newString = ""
+
+            while i < length:
+
+                if i < length - 1 and s[i] == s[i + 1]:
+                    foundDuplicates = True
+                    i += 2
+                else:
+                    newString += s[i]
+                    i += 1
+
+            if not foundDuplicates:
+                return newString
+
+            s = newString
+            length = len(s)
+```
+
+---
+
+## Dry Run
+
+Input
+
+```text
+abbaca
+```
+
+### Pass 1
+
+```text
+a b b a c a
+
+↓
+
+a a c a
+```
+
+New String
+
+```text
+aaca
+```
+
+---
+
+### Pass 2
+
+```text
+a a c a
+
+↓
+
+c a
+```
+
+New String
+
+```text
+ca
+```
+
+---
+
+### Pass 3
+
+```text
+c a
+```
+
+No adjacent duplicates remain.
+
+Return
+
+```text
+ca
+```
+
+---
+
+## Time Complexity
+
+### O(n²)
 
 Reason:
 
-* We may scan the string multiple times.
-* During every scan, we build a new string.
+* Each pass scans the entire string → **O(n)**.
+* In the worst case, we may perform multiple scans.
 
-### Space Complexity
+Example:
 
-**O(n)**
+```text
+abccba
 
-A new string is created during every iteration.
+↓
+
+abba
+
+↓
+
+aa
+
+↓
+
+""
+```
+
+Therefore,
+
+```text
+O(n) × O(n) = O(n²)
+```
+
+---
+
+## Space Complexity
+
+### O(n)
+
+A new string is created during every pass.
 
 ---
 
@@ -102,14 +225,16 @@ A new string is created during every iteration.
 
 ## Intuition
 
-The most recently added character is the only one that can become adjacent to the current character after previous removals.
+The current character only needs to be compared with the **most recent unmatched character**.
 
-Therefore, use a **Stack**.
+A **Stack** naturally stores the most recently processed character.
 
 For every character:
 
 * If it matches the top of the stack, remove the top.
 * Otherwise, push it.
+
+Since each character is pushed and popped at most once, we avoid repeated scans.
 
 ---
 
@@ -123,11 +248,11 @@ For every character:
 4. Otherwise:
 
    * Push the current character.
-5. Join all remaining characters in the stack.
+5. Join the remaining stack into a string.
 
 ---
 
-## Solution
+## Optimal Solution
 
 ```python
 class Solution(object):
@@ -164,7 +289,7 @@ abbaca
 | c         | c     |
 | a         | c a   |
 
-Result:
+Result
 
 ```text
 ca
@@ -174,13 +299,16 @@ ca
 
 ## Time Complexity
 
-**O(n)**
+### O(n)
 
 Reason:
 
-* Every character is pushed at most once.
-* Every character is popped at most once.
-* `join()` traverses the remaining stack once.
+Each character is:
+
+* Pushed at most once.
+* Popped at most once.
+
+Joining the stack also takes **O(n)**.
 
 Overall:
 
@@ -192,7 +320,7 @@ O(n)
 
 ## Space Complexity
 
-**O(n)**
+### O(n)
 
 Worst case:
 
@@ -206,41 +334,68 @@ No duplicates exist, so every character is stored in the stack.
 
 # Why Stack?
 
-After removing duplicates, the current character only needs to be compared with the **most recent unmatched character**.
-
 Example:
 
 ```text
 abbaca
-
-a b b
-
-↓
-
-a
-
-Now the next 'a' becomes adjacent to the previous 'a'.
 ```
 
-The stack naturally keeps track of the most recent unmatched character, making it the perfect data structure for this problem.
+Initially:
+
+```text
+a b b
+```
+
+After removing:
+
+```text
+bb
+```
+
+The string becomes:
+
+```text
+aaca
+```
+
+Now the two `'a'` characters become adjacent.
+
+The only character we need to compare the current character with is the **most recently unmatched character**.
+
+A stack maintains exactly this information.
 
 ---
 
-# Interview Takeaways
+# Brute Force vs Optimal
 
-* Brute Force repeatedly scans and rebuilds the string → **O(n²)**.
-* Stack processes each character only once → **O(n)**.
-* Every character is pushed and popped **at most once**.
-* Use `stack[-1]` to access the top element.
-* Use `"".join(stack)` to efficiently convert the stack into the final string without modifying it.
+| Feature                      | Brute Force | Stack |
+| ---------------------------- | ----------- | ----- |
+| Repeated scans               | ✅ Yes       | ❌ No  |
+| Builds new string repeatedly | ✅ Yes       | ❌ No  |
+| Time Complexity              | O(n²)       | O(n)  |
+| Space Complexity             | O(n)        | O(n)  |
 
 ---
 
 # Pattern Recognition
 
-Think **Stack** when you see:
+Think **Stack** whenever you see:
 
 * Adjacent removals.
 * Most recently processed element.
 * Undoing previous work.
 * LIFO behavior.
+
+---
+
+# Interview Takeaways
+
+* Start with the brute-force approach by repeatedly removing adjacent duplicates.
+* Identify the repeated work:
+
+  * Multiple scans.
+  * Rebuilding the string.
+* Optimize using a stack.
+* Every character is pushed and popped at most once.
+* Use `stack[-1]` to access the top element.
+* Use `"".join(stack)` to efficiently convert the stack into the final answer without modifying the stack.
