@@ -1,4 +1,4 @@
-# Min Stack (LeetCode 155)
+# Min Stack
 
 ## Problem Statement
 
