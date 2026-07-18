@@ -1,0 +1,207 @@
+# Remove Stars From a String
+
+## Problem Statement
+
+You are given a string `s` containing lowercase English letters and `'*'`.
+
+Each `'*'` removes:
+
+* The closest **non-star character to its left**
+* The `'*'` itself
+
+Return the final string after all stars have been removed.
+
+---
+
+# Approach 1: Brute Force
+
+## Intuition
+
+Repeatedly scan the string and remove every adjacent `character*` pair.
+
+After one pass, some new `character*` pairs may be formed. Continue until no stars remain.
+
+### Algorithm
+
+1. Traverse the string.
+2. If a character is immediately followed by `'*'`, skip both.
+3. Build a new string with the remaining characters.
+4. Repeat until no removals occur.
+5. Return the final string.
+
+### Code
+
+```python
+class Solution(object):
+    def removeStars(self, s):
+        while True:
+            start = 0
+            newStr = ""
+            starFound = False
+
+            while start < len(s):
+                if (
+                    start < len(s) - 1
+                    and s[start] != "*"
+                    and s[start + 1] == "*"
+                ):
+                    starFound = True
+                    start += 2
+                else:
+                    newStr += s[start]
+                    start += 1
+
+            if not starFound:
+                return newStr
+
+            s = newStr
+```
+
+### Dry Run
+
+Input:
+
+```text
+leet**cod*e
+```
+
+**Pass 1**
+
+```text
+leet**cod*e
+   ^^      ^^
+
+↓
+
+lee*coe
+```
+
+**Pass 2**
+
+```text
+lee*coe
+  ^^
+
+↓
+
+lecoe
+```
+
+Final Answer:
+
+```text
+lecoe
+```
+
+### Complexity
+
+* **Time:** `O(n²)`
+* **Space:** `O(n)`
+
+### Why is it O(n²)?
+
+* Each pass scans the entire string → `O(n)`
+* In the worst case, multiple passes are required.
+* Total complexity becomes `O(n²)`.
+
+---
+
+# Approach 2: Stack (Optimal)
+
+## Intuition
+
+A `'*'` always removes the **most recently kept character**.
+
+This is exactly **Last In First Out (LIFO)**.
+
+A Stack naturally supports this behavior.
+
+### Algorithm
+
+1. Traverse the string once.
+2. If the current character is not `'*'`, push it onto the stack.
+3. If the current character is `'*'`, pop the top character.
+4. Join the stack to form the final string.
+
+### Code
+
+```python
+class Solution(object):
+    def removeStars(self, s):
+        stack = []
+
+        for i in range(len(s)):
+            if s[i] != "*":
+                stack.append(s[i])
+            elif s[i] == "*" and stack:
+                stack.pop()
+
+        return "".join(stack)
+```
+
+### Dry Run
+
+Input:
+
+```text
+leet**cod*e
+```
+
+| Character | Stack |
+| --------- | ----- |
+| l         | l     |
+| e         | le    |
+| e         | lee   |
+| t         | leet  |
+| *         | lee   |
+| *         | le    |
+| c         | lec   |
+| o         | leco  |
+| d         | lecod |
+| *         | leco  |
+| e         | lecoe |
+
+Final Answer:
+
+```text
+lecoe
+```
+
+### Complexity
+
+* **Time:** `O(n)`
+* **Space:** `O(n)`
+
+---
+
+# Pattern Recognition
+
+Whenever a problem asks you to:
+
+* Remove the previous element
+* Undo the last operation
+* Delete the most recently added item
+* Handle backspaces
+* Maintain history
+
+Think:
+
+> **Stack (LIFO)**
+
+---
+
+# Comparison
+
+| Approach    | Time    | Space  | Notes                                                        |
+| ----------- | ------- | ------ | ------------------------------------------------------------ |
+| Brute Force | `O(n²)` | `O(n)` | Repeatedly removes `character*` pairs until no stars remain. |
+| Stack       | `O(n)`  | `O(n)` | Processes each character exactly once. Optimal solution.     |
+
+---
+
+# Key Takeaways
+
+* The brute-force solution is correct but repeatedly scans the string, making it inefficient.
+* The stack solution processes each character only once.
+* Since each `'*'` removes the **most recently kept character**, the problem naturally follows the **LIFO** principle.
+* This is a classic Stack pattern commonly seen in problems involving **backspace, undo operations, and removing previous elements**.
